@@ -14,10 +14,10 @@ To clone, install, and run, execute the following commands.
     npm install
     npm start
 
-Replace `server_url`, `username` and `password` with your server details.
+Replace `server_url`, `username` and `password` with your CRUD server details.
 
 ## Testing ##
-The test suite runs with Mocha and Chai, Mocha must be installed globally to run the tests. You can do so by running the following.
+The test suite runs with Mocha and Chai. Mocha must be installed globally to run the tests and you can do so by running the following command.
 
     npm install mocha -g
 
