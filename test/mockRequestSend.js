@@ -1,12 +1,11 @@
-var RequestSender = function(request) {
+var RequestSender = function(isSuccess) {
 
-  this.send = function(method, url, options, onSuccess, onError) {
+  this.send = function(method, path, options, onSuccess, onError) {
 
     var res = {};
     var body = {key: 'value'};
     var error = 'test'
-
-    if(url.indexOf('goodUrl') != -1)
+    if(isSuccess)
       onSuccess(res, body);
     else
       onError(res, error);

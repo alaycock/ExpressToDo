@@ -1,14 +1,13 @@
-var expect        = require("chai").expect;
-var ToDo          = require("../lib/todo");
-var MockSender    = require("./mockRequestSend");
-var MockConfig    = require("./mockConfig");
+var expect     = require("chai").expect;
+var ToDo       = require("../lib/todo");
+var MockSender = require("./mockRequestSend");
 
 describe("ToDo", function(){
   describe("#getAll(req, res)", function(){
     it("should respond with all items from the database", function(){
 
-      var mockRequester = new MockSender();
-      var todo = new ToDo(mockRequester, MockConfig.goodConfig);
+      var mockRequester = new MockSender(true);
+      var todo = new ToDo(mockRequester);
 
       var req = {};
       var res = {};
@@ -23,7 +22,7 @@ describe("ToDo", function(){
     it("should respond with an error message from the database", function(){
 
       var mockRequester = new MockSender();
-      var todo = new ToDo(mockRequester, MockConfig.badConfig);
+      var todo = new ToDo(mockRequester);
 
       var req = {};
       var res = {};
@@ -39,8 +38,8 @@ describe("ToDo", function(){
   describe("#post(req, res)", function(){
     it("should respond with a single new item from the database", function(){
 
-      var mockRequester = new MockSender();
-      var todo = new ToDo(mockRequester, MockConfig.goodConfig);
+      var mockRequester = new MockSender(true);
+      var todo = new ToDo(mockRequester);
 
       var req = {};
       req.body = {};
@@ -59,7 +58,7 @@ describe("ToDo", function(){
 
     it("should respond with an invalid colour error", function(){
       var mockRequester = new MockSender();
-      var todo = new ToDo(mockRequester, MockConfig.goodConfig);
+      var todo = new ToDo(mockRequester);
 
       var req = {
         body: {
@@ -79,7 +78,7 @@ describe("ToDo", function(){
 
     it("should respond with an invalid order error", function(){
       var mockRequester = new MockSender();
-      var todo = new ToDo(mockRequester, MockConfig.goodConfig);
+      var todo = new ToDo(mockRequester);
 
       var req = {
         body: {
@@ -99,7 +98,7 @@ describe("ToDo", function(){
 
     it("should respond with an invalid complete status error", function(){
       var mockRequester = new MockSender();
-      var todo = new ToDo(mockRequester, MockConfig.goodConfig);
+      var todo = new ToDo(mockRequester);
 
       var req = {
         body: {
@@ -119,7 +118,7 @@ describe("ToDo", function(){
 
     it("should respond with a missing property error", function(){
       var mockRequester = new MockSender();
-      var todo = new ToDo(mockRequester, MockConfig.goodConfig);
+      var todo = new ToDo(mockRequester);
 
       var req = {
         body: {
@@ -141,8 +140,8 @@ describe("ToDo", function(){
   describe("#get(req, res)", function(){
     it("should respond with a single item from the database", function(){
 
-      var mockRequester = new MockSender();
-      var todo = new ToDo(mockRequester, MockConfig.goodConfig);
+      var mockRequester = new MockSender(true);
+      var todo = new ToDo(mockRequester);
 
       var req = {params: {todo_id: 1}};
       var res = {};
@@ -157,7 +156,7 @@ describe("ToDo", function(){
     it("should respond with an error message from the database", function(){
 
       var mockRequester = new MockSender();
-      var todo = new ToDo(mockRequester, MockConfig.badConfig);
+      var todo = new ToDo(mockRequester);
 
       var req = {params: {todo_id: 1}};
       var res = {};
@@ -173,8 +172,8 @@ describe("ToDo", function(){
   describe("#put(req, res)", function(){
     it("should respond with a single new item from the database", function(){
 
-      var mockRequester = new MockSender();
-      var todo = new ToDo(mockRequester, MockConfig.goodConfig);
+      var mockRequester = new MockSender(true);
+      var todo = new ToDo(mockRequester);
 
       var req = {
         body: {
@@ -197,7 +196,7 @@ describe("ToDo", function(){
 
     it("should respond with an error message from the database", function(){
       var mockRequester = new MockSender();
-      var todo = new ToDo(mockRequester, MockConfig.badConfig);
+      var todo = new ToDo(mockRequester);
 
       var req = {
         body: {
@@ -219,7 +218,7 @@ describe("ToDo", function(){
     it("should respond with a validation error", function(){
 
       var mockRequester = new MockSender();
-      var todo = new ToDo(mockRequester, MockConfig.badConfig);
+      var todo = new ToDo(mockRequester);
 
       var req = {
         body: {
@@ -236,7 +235,38 @@ describe("ToDo", function(){
       };
       todo.put(req, res);
     });
+  });
 
+  describe("#delete(req, res)", function(){
+    it("should respond with a single item from the database", function(){
+
+      var mockRequester = new MockSender(true);
+      var todo = new ToDo(mockRequester);
+
+      var req = {params: {todo_id: 1}};
+      var res = {};
+      res.header = function(key, val) { };
+      res.send = function(res_data) {
+        expect(res_data).to.have.a.property("Result", "Deletion successful");
+      };
+      todo.delete(req, res);
+
+    });
+
+    it("should respond with an error message from the database", function(){
+
+      var mockRequester = new MockSender();
+      var todo = new ToDo(mockRequester);
+
+      var req = {params: {todo_id: 1}};
+      var res = {};
+      res.header = function(key, val) { };
+      res.send = function(res_data) {
+        expect(res_data).to.have.a.property("error", "Error occurred while deleting: test");
+      };
+      todo.delete(req, res);
+
+    });
   });
 
 });

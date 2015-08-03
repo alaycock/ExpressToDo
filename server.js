@@ -16,7 +16,7 @@ app.use(bodyParser.json());
 app.get('/', express.static('public'));
 
 // For any /todo paths, route them to the todo API
-var todo = new ToDo(new Sender(request), config);
+var todo = new ToDo(new Sender(request, config));
 router.get('/', todo.getAll)
       .post('/', todo.post)
       .get('/:todo_id', todo.get)
