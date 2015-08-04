@@ -67,6 +67,7 @@ function toggleCompleteItem() {
     stopLoadingIcon();
   }, function(error) {
     stopLoadingIcon();
+    refreshTodo();
     errorMessage();
   });
 }
@@ -96,10 +97,14 @@ function createNewItem() {
     complete: "false"
   };
 
+  if(!newData.text)
+    return;
+
   startLoadingIcon();
   $.post( "/todo", newData)
   .done(function( response ) {
     if(response.error) {
+      stopLoadingIcon();
       errorMessage();
       return;
     }
