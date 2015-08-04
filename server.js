@@ -8,11 +8,11 @@ var Sender     = require('./lib/requestSend');
 var app        = express();
 var router     = express.Router();
 
-// Helps parse the body of POST requests
+// Helps parse the body of POST and PUT requests
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-// For any /todo paths, route them to the todo API
+// For any /todo paths, route them to the todo rest API
 var todo = new ToDo(new Sender(request, config));
 router.get('/', todo.getAll)
       .post('/', todo.post)
