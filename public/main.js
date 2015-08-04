@@ -145,7 +145,6 @@ function editText() {
   });
 
   $(this).replaceWith(input);
-  console.log();
 }
 
 // Submit the edited text to the database
@@ -195,7 +194,6 @@ function getItemIndexById(id) {
 
 // Build html for a new item
 function buildNewItem(item) {
-  console.log(item);
   var row = $('<li>').attr("id", item.id);
   var checkbox = $('<input type="checkbox">').addClass('completeCheckbox');
   if(item.data.complete.toLowerCase() == 'true') {
