@@ -43,7 +43,6 @@ describe("ToDo", function(){
 
       var req = {};
       req.body = {};
-      req.body.order = 1;
       req.body.text = "test";
       req.body.complete = "true";
 
@@ -55,32 +54,12 @@ describe("ToDo", function(){
       todo.post(req, res);
     });
 
-    it("should respond with an invalid order error", function(){
-      var mockRequester = new MockSender();
-      var todo = new ToDo(mockRequester);
-
-      var req = {
-        body: {
-          order: -1,
-          text: 'test',
-          complete: 'true'
-      }};
-
-      var res = {};
-      res.header = function(key, val) { };
-      res.send = function(res_data) {
-        expect(res_data).to.have.a.property("error", "Order is not a valid non-negative integer");
-      };
-      todo.post(req, res);
-    });
-
     it("should respond with an invalid complete status error", function(){
       var mockRequester = new MockSender();
       var todo = new ToDo(mockRequester);
 
       var req = {
         body: {
-          order: 1,
           text: 'test',
           complete: 'blurb'
       }};
@@ -99,7 +78,6 @@ describe("ToDo", function(){
 
       var req = {
         body: {
-          order: 1,
           text: 'test',
       }};
 
@@ -153,7 +131,6 @@ describe("ToDo", function(){
 
       var req = {
         body: {
-          order: 1,
           text: 'test',
           complete: 'true'},
         params: {
@@ -175,7 +152,6 @@ describe("ToDo", function(){
 
       var req = {
         body: {
-          order: 1,
           text: 'test',
           complete: 'true'},
         params: {
