@@ -132,7 +132,7 @@ function editText() {
   var index = getItemIndexById(editId);
   var input = $('<input>')
     .attr('type', 'text')
-    .val(todoItems[index].data.text)
+    .val(todoItems[index].data.text);
 
   input.keyup(function(){
     if(event.keyCode == 13){
@@ -145,6 +145,7 @@ function editText() {
   });
 
   $(this).replaceWith(input);
+  input.focus();
 }
 
 // Submit the edited text to the database
