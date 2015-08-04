@@ -2,15 +2,12 @@
   width: 200px;
   list-style: none;
 }
-
 span.todoText:hover {
     background-color: #EEE;
 }
-
 .deleteItem {
   float: right;
 }
-
 .complete {
     text-decoration: line-through;
 }

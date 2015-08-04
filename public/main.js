@@ -19,10 +19,14 @@ function getAllItems() {
     todoItems = data;
     refreshTodo();
     stopLoadingIcon();
+  })
+  .fail(function() {
+    stopLoadingIcon();
+    errorMessage();
   });
 }
 
-// Delete an item from the DB, then rerender
+// Delete an item from the DB, then render it
 function deleteItem(input) {
   var delId = $(this).parent().attr('id');
 
@@ -39,15 +43,18 @@ function deleteItem(input) {
       }
       refreshTodo();
       stopLoadingIcon();
+    },
+    error: function() {
+      stopLoadingIcon();
+      errorMessage();
     }
   });
 }
 
+// Update items when marked complete/incomplete
 function toggleCompleteItem() {
   var checkedId = $(this).parent().attr('id');
-
   var index = getItemIndexById(checkedId);
-
   var isChecked = $(this).is(":checked");
 
   var clonedObject = $.extend(true, {}, todoItems[index]);
@@ -59,11 +66,12 @@ function toggleCompleteItem() {
     refreshTodo();
     stopLoadingIcon();
   }, function(error) {
-    errorMessage();
     stopLoadingIcon();
+    errorMessage();
   });
 }
 
+// Update the database with a new item
 function updateItem(item, onSuccess, onError) {
   $.ajax({
     url: '/todo/' + item.id,
@@ -81,9 +89,9 @@ function updateItem(item, onSuccess, onError) {
   });
 }
 
+// Create a new item and submit it to the database
 function createNewItem() {
   var newData = {
-    order: todoItems.length,
     text: $("#addText").val(),
     complete: "false"
   };
@@ -108,6 +116,7 @@ function createNewItem() {
     stopLoadingIcon();
   })
   .fail(function(error) {
+    stopLoadingIcon();
     errorMessage();
   });
 }
@@ -134,7 +143,7 @@ function editText() {
   console.log();
 }
 
-//
+// Submit the edited text to the database
 function submitEditText(index, input) {
   var clonedItem = $.extend(true, {}, todoItems[index]);
   clonedItem.data.text = input.val();
@@ -146,8 +155,8 @@ function submitEditText(index, input) {
     stopLoadingIcon();
   }, function() {
     refreshTodo();
-    errorMessage();
     stopLoadingIcon();
+    errorMessage();
   });
 }
 
