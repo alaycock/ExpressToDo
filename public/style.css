@@ -1,0 +1,11 @@
+#todo-content {
+  width: 200px;
+}
+
+.deleteItem {
+  float: right;
+}
+
+.complete {
+    text-decoration: line-through;
+}

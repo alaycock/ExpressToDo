@@ -188,7 +188,7 @@ describe("ToDo", function(){
       var res = {};
       res.header = function(key, val) { };
       res.send = function(res_data) {
-        expect(res_data).to.have.a.property("key", "value");
+        expect(res_data).to.have.a.property("Result", "Update successful");
       };
       todo.put(req, res);
 

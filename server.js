@@ -12,9 +12,6 @@ var router     = express.Router();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-// Serve static files from public directory
-app.get('/', express.static('public'));
-
 // For any /todo paths, route them to the todo API
 var todo = new ToDo(new Sender(request, config));
 router.get('/', todo.getAll)
@@ -24,6 +21,9 @@ router.get('/', todo.getAll)
       .delete('/:todo_id', todo.delete);
 
 app.use('/todo', router);
+
+// Serve static files from public directory
+app.use(express.static('public'));
 
 // Run the server
 var server = app.listen(3000, function () {
