@@ -172,7 +172,6 @@ describe("ToDo", function(){
 
       var req = {
         body: {
-          order: 1,
           text: 'test'
         },
         params: {
