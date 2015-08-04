@@ -1,13 +1,25 @@
 #todo-content {
   width: 200px;
   list-style: none;
+  overflow: auto;
 }
 span.todoText:hover {
     background-color: #EEE;
 }
+.text-wrapper {
+  width: 180px;
+  float:left;
+}
 .deleteItem {
-  float: right;
+  float: left;
+  cursor: pointer;
+}
+#addItem {
+  cursor: pointer;
 }
 .complete {
     text-decoration: line-through;
+}
+.text-wrapper input[type='text'] {
+    width: 150px;
 }

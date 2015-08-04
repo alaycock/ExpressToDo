@@ -4,8 +4,9 @@ var todoItems = [];
 $(document).ready(function() {
   // Click the plus, or press enter to submit,
   $("#addItem").click(createNewItem);
-  $("#addText").keyup(function(event){
-    if(event.keyCode == 13){
+  $("#addText").keyup(function(e){
+    var key = e.keyCode || e.which;
+    if(key == 13){
       $("#addItem").click();
     }
   });
@@ -28,7 +29,7 @@ function getAllItems() {
 
 // Delete an item from the DB, then render it
 function deleteItem(input) {
-  var delId = $(this).parent().attr('id');
+  var delId = $(this).closest('li').attr('id');
 
   startLoadingIcon();
   $.ajax({
@@ -53,7 +54,7 @@ function deleteItem(input) {
 
 // Update items when marked complete/incomplete
 function toggleCompleteItem() {
-  var checkedId = $(this).parent().attr('id');
+  var checkedId = $(this).closest('li').attr('id');
   var index = getItemIndexById(checkedId);
   var isChecked = $(this).is(":checked");
 
@@ -128,14 +129,16 @@ function createNewItem() {
 
 // When the text is clicked, make it editable, on enter or blur, submit the text
 function editText() {
-  var editId = $(this).parent().attr('id');
+  console.log("EDITING");
+  var editId = $(this).closest('li').attr('id');
   var index = getItemIndexById(editId);
   var input = $('<input>')
     .attr('type', 'text')
     .val(todoItems[index].data.text);
 
-  input.keyup(function(){
-    if(event.keyCode == 13){
+  input.keyup(function(e){
+    var key = e.keyCode || e.which;
+    if(key == 13){
       submitEditText(index, input);
     }
   });
@@ -197,17 +200,18 @@ function getItemIndexById(id) {
 function buildNewItem(item) {
   var row = $('<li>').attr("id", item.id);
   var checkbox = $('<input type="checkbox">').addClass('completeCheckbox');
+  var text = $('<span>').addClass('todoText').text(item.data.text);
+
   if(item.data.complete.toLowerCase() == 'true') {
-    row.addClass('complete');
+    text.addClass('complete');
     checkbox.attr('checked', true);
   }
 
-  var text = $('<span>')
-    .addClass('todoText')
-    .text(item.data.text);
+  var wrapper = $("<div>")
+    .addClass("text-wrapper")
+    .html(checkbox.prop('outerHTML') + text.prop('outerHTML'));
 
-  return row.html(checkbox.prop('outerHTML') + text.prop('outerHTML') +
-    '<i class="fa fa-times deleteItem"></i>');
+  return row.html(wrapper.prop('outerHTML') + '<i class="fa fa-times deleteItem"></i>');
 }
 
 // Draw loading icon
