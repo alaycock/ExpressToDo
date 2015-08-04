@@ -1,11 +1,18 @@
 var todoItems = [];
 
+// Setup
 $(document).ready(function() {
+  // Click the plus, or press enter to submit,
   $("#addItem").click(createNewItem);
+  $("#addText").keyup(function(event){
+    if(event.keyCode == 13){
+      $("#addItem").click();
+    }
+  });
   getAllItems();
-
 });
 
+// Get all items and render them
 function getAllItems() {
   startLoadingIcon();
   $.get( "/todo", function(data) {
@@ -15,11 +22,11 @@ function getAllItems() {
   });
 }
 
+// Delete an item from the DB, then rerender
 function deleteItem(input) {
-
   var delId = $(this).parent().attr('id');
-  startLoadingIcon();
 
+  startLoadingIcon();
   $.ajax({
     url: '/todo/' + delId,
     type: 'DELETE',
@@ -39,13 +46,7 @@ function deleteItem(input) {
 function toggleCompleteItem() {
   var checkedId = $(this).parent().attr('id');
 
-  var index = -1;
-  for(var i = 0; i < todoItems.length; i++) {
-    if(todoItems[i].id == checkedId) {
-      index = i;
-      break;
-    }
-  }
+  var index = getItemIndexById(checkedId);
 
   var isChecked = $(this).is(":checked");
 
@@ -64,7 +65,6 @@ function toggleCompleteItem() {
 }
 
 function updateItem(item, onSuccess, onError) {
-  console.log(item.data);
   $.ajax({
     url: '/todo/' + item.id,
     type: 'PUT',
@@ -82,16 +82,13 @@ function updateItem(item, onSuccess, onError) {
 }
 
 function createNewItem() {
-
-  startLoadingIcon();
-
   var newData = {
     order: todoItems.length,
     text: $("#addText").val(),
-    color: "#FFFFFF",
     complete: "false"
   };
 
+  startLoadingIcon();
   $.post( "/todo", newData)
   .done(function( response ) {
     if(response.error) {
@@ -115,6 +112,46 @@ function createNewItem() {
   });
 }
 
+// When the text is clicked, make it editable, on enter or blur, submit the text
+function editText() {
+  var editId = $(this).parent().attr('id');
+  var index = getItemIndexById(editId);
+  var input = $('<input>')
+    .attr('type', 'text')
+    .val(todoItems[index].data.text)
+
+  input.keyup(function(){
+    if(event.keyCode == 13){
+      submitEditText(index, input);
+    }
+  });
+
+  input.blur(function() {
+    submitEditText(index, input);
+  });
+
+  $(this).replaceWith(input);
+  console.log();
+}
+
+//
+function submitEditText(index, input) {
+  var clonedItem = $.extend(true, {}, todoItems[index]);
+  clonedItem.data.text = input.val();
+
+  startLoadingIcon();
+  updateItem(clonedItem, function() {
+    todoItems[index].data.text = input.val();
+    refreshTodo();
+    stopLoadingIcon();
+  }, function() {
+    refreshTodo();
+    errorMessage();
+    stopLoadingIcon();
+  });
+}
+
+// Redraw todo list from data
 function refreshTodo() {
   var container = $('#todo-content').empty();
   $.each(todoItems, function(key, item){
@@ -123,11 +160,26 @@ function refreshTodo() {
   bindEvents();
 }
 
+// ----------- Utility methods -----------
+
 function bindEvents() {
   $(".deleteItem").click(deleteItem);
   $(".completeCheckbox").click(toggleCompleteItem);
+  $(".todoText").click(editText);
 }
 
+function getItemIndexById(id) {
+  var index = -1;
+  for(var i = 0; i < todoItems.length; i++) {
+    if(todoItems[i].id == id) {
+      index = i;
+      break;
+    }
+  }
+  return index;
+}
+
+// Build html for a new item
 function buildNewItem(item) {
   console.log(item);
   var row = $('<li>').attr("id", item.id);
@@ -137,18 +189,25 @@ function buildNewItem(item) {
     checkbox.attr('checked', true);
   }
 
-  return row.html(checkbox.prop('outerHTML') + item.data.text +
+  var text = $('<span>')
+    .addClass('todoText')
+    .text(item.data.text);
+
+  return row.html(checkbox.prop('outerHTML') + text.prop('outerHTML') +
     '<i class="fa fa-times deleteItem"></i>');
 }
 
+// Draw loading icon
 function startLoadingIcon() {
   $('#title').html('To Do <i class="fa fa-circle-o-notch fa-spin"></i>');
 }
 
+// Undraw loading icon
 function stopLoadingIcon() {
   $('#title').html('To Do');
 }
 
+// Generic error message for the user
 function errorMessage() {
   alert("Oops, something went wrong, check your internet connection and try again.");
 }

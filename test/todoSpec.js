@@ -45,33 +45,12 @@ describe("ToDo", function(){
       req.body = {};
       req.body.order = 1;
       req.body.text = "test";
-      req.body.color = "#FFFFFF";
       req.body.complete = "true";
 
       var res = {};
       res.header = function(key, val) { };
       res.send = function(res_data) {
         expect(res_data).to.have.a.property("key", "value");
-      };
-      todo.post(req, res);
-    });
-
-    it("should respond with an invalid colour error", function(){
-      var mockRequester = new MockSender();
-      var todo = new ToDo(mockRequester);
-
-      var req = {
-        body: {
-          order: 1,
-          text: 'test',
-          color: '#FFFFfG',
-          complete: 'blurb'
-      }};
-
-      var res = {};
-      res.header = function(key, val) { };
-      res.send = function(res_data) {
-        expect(res_data).to.have.a.property("error", "Color does not match the hex format #FFFFFF");
       };
       todo.post(req, res);
     });
@@ -84,7 +63,6 @@ describe("ToDo", function(){
         body: {
           order: -1,
           text: 'test',
-          color: '#FFFFFF',
           complete: 'true'
       }};
 
@@ -104,7 +82,6 @@ describe("ToDo", function(){
         body: {
           order: 1,
           text: 'test',
-          color: '#FFFFFF',
           complete: 'blurb'
       }};
 
@@ -124,7 +101,6 @@ describe("ToDo", function(){
         body: {
           order: 1,
           text: 'test',
-          color: '#FFFFFF',
       }};
 
       var res = {};
@@ -179,7 +155,6 @@ describe("ToDo", function(){
         body: {
           order: 1,
           text: 'test',
-          color: '#FFFFFF',
           complete: 'true'},
         params: {
           todo_id: 1
@@ -202,7 +177,6 @@ describe("ToDo", function(){
         body: {
           order: 1,
           text: 'test',
-          color: '#FFFFFF',
           complete: 'true'},
         params: {
           todo_id: 1
@@ -223,8 +197,8 @@ describe("ToDo", function(){
       var req = {
         body: {
           order: 1,
-          text: 'test',
-          color: '#FFFFFF'},
+          text: 'test'
+        },
         params: {
           todo_id: 1
         }};
